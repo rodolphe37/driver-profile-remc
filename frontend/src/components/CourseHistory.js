@@ -34,20 +34,12 @@ const CourseHistory = ({ courseHistory, evaluation }) => {
     return diff;
   };
 
-  // Get current competency being worked on
-  const getCurrentCompetency = () => {
-    const comps = ['c1', 'c2', 'c3', 'c4'];
-    for (const compId of comps.reverse()) {
-      const comp = evaluation[compId];
-      const hasUncovered = comp.subCompetencies.some(s => !s.covered || s.status !== 'fort');
-      if (hasUncovered) {
-        return comp;
-      }
-    }
-    return evaluation.c4;
+  // Get current competency from course history (now properly set based on hours)
+  const currentComp = courseHistory.currentCompetency || {
+    id: 'c1',
+    name: 'C1',
+    title: remcData?.c1?.title || 'Maîtriser le maniement du véhicule'
   };
-
-  const currentComp = getCurrentCompetency();
 
   // Get competency color scheme
   const getCompColor = (compId) => {
@@ -61,6 +53,17 @@ const CourseHistory = ({ courseHistory, evaluation }) => {
   };
 
   const compColor = getCompColor(currentComp.id);
+
+  // Level descriptions
+  const getLevelDescription = (level) => {
+    const descriptions = {
+      1: "Maniement du véhicule (trafic faible)",
+      2: "Circulation normale",
+      3: "Conditions difficiles",
+      4: "Conduite autonome"
+    };
+    return descriptions[level] || descriptions[1];
+  };
 
   return (
     <div className="space-y-4" data-testid="course-history">

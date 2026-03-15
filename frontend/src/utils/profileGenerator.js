@@ -9,39 +9,161 @@ const randomElements = (arr, count) => {
   return shuffled.slice(0, count);
 };
 
+// Determine current competency level based on hours
+const getCurrentCompetencyLevel = (hours) => {
+  if (hours <= 11) return 1; // C1: 0-11h
+  if (hours <= 15) return 2; // C2: 12-15h
+  if (hours <= 20) return 3; // C3: 16-20h
+  return 4; // C4: 20h+
+};
+
+// Get appropriate driving contexts based on competency level
+const getContextsForLevel = (level) => {
+  const contexts = {
+    1: [ // C1 contexts - parking, quiet areas
+      "Parking auto-école",
+      "Quartier calme",
+      "Zone résidentielle calme",
+      "Parking de supermarché (vide)",
+      "Route de campagne peu fréquentée"
+    ],
+    2: [ // C2 contexts - normal city driving
+      "Centre-ville",
+      "Zone commerciale",
+      "Quartier résidentiel",
+      "Rond-point simple",
+      "Route départementale",
+      "Zone 30"
+    ],
+    3: [ // C3 contexts - difficult conditions
+      "Périphérique",
+      "Voie rapide",
+      "Circulation dense",
+      "Route de montagne",
+      "Nuit en agglomération",
+      "Pluie légère",
+      "Rond-point complexe",
+      "Zone industrielle"
+    ],
+    4: [ // C4 contexts - autonomous driving
+      "Itinéraire inconnu",
+      "Trajet longue distance",
+      "Autoroute",
+      "Conditions variées",
+      "Navigation autonome",
+      "Éco-conduite en ville",
+      "Pluie forte",
+      "Nuit sur route"
+    ]
+  };
+  return contexts[level] || contexts[1];
+};
+
+// Get appropriate student feedback based on level
+const getFeedbackForLevel = (level) => {
+  const feedback = {
+    1: [
+      "Je me suis senti(e) à l'aise pour démarrer aujourd'hui",
+      "J'ai encore du mal avec l'embrayage",
+      "Les manœuvres de volant s'améliorent",
+      "Je dois travailler mes rétros",
+      "Je progresse sur les démarrages",
+      "La coordination pédale/volant est difficile",
+      "Je commence à bien gérer les vitesses",
+      "La marche arrière me stresse encore"
+    ],
+    2: [
+      "J'ai mieux géré ma vitesse en ville",
+      "Les ronds-points me stressent encore",
+      "J'ai bien anticipé les priorités",
+      "Je dois améliorer mon positionnement",
+      "Je suis plus confiant(e) en ville",
+      "Les créneaux restent difficiles",
+      "J'ai bien réagi aux feux tricolores",
+      "Je me suis trompé(e) de voie"
+    ],
+    3: [
+      "J'ai eu peur lors d'un dépassement",
+      "La circulation dense me stresse",
+      "J'ai bien géré l'insertion sur le périphérique",
+      "Les distances de sécurité sont plus claires",
+      "La conduite de nuit m'inquiète",
+      "Je gère mieux les virages serrés",
+      "Le croisement avec les camions est stressant",
+      "J'ai bien anticipé les deux-roues"
+    ],
+    4: [
+      "J'ai réussi à suivre l'itinéraire seul(e)",
+      "Le GPS m'a bien aidé(e)",
+      "Je me sens prêt(e) pour l'examen",
+      "L'éco-conduite devient naturelle",
+      "J'ai bien géré un imprévu sur la route",
+      "La conduite autonome me plaît",
+      "J'ai fait une belle séance aujourd'hui",
+      "Le moniteur était content de moi"
+    ]
+  };
+  return feedback[level] || feedback[1];
+};
+
 // Generate a weighted status based on hours and competency level
-const generateStatus = (hours, competencyLevel, subCompIndex, totalSubs) => {
-  // Base probabilities adjusted by hours and position in curriculum
-  const progressFactor = hours / 30; // Normalized progress (0 to ~1.5 for 40h+)
-  const curriculumPosition = subCompIndex / totalSubs;
-  
-  // Earlier competencies in lower levels should be stronger
-  let strongProb, mediumProb;
-  
-  if (competencyLevel === 1) { // C1
-    strongProb = Math.min(0.8, progressFactor * 0.9 - curriculumPosition * 0.2);
-    mediumProb = 0.6;
-  } else if (competencyLevel === 2) { // C2
-    strongProb = Math.min(0.7, (progressFactor - 0.3) * 0.8 - curriculumPosition * 0.15);
-    mediumProb = 0.5;
-  } else if (competencyLevel === 3) { // C3
-    strongProb = Math.min(0.5, (progressFactor - 0.5) * 0.7 - curriculumPosition * 0.1);
-    mediumProb = 0.4;
-  } else { // C4
-    strongProb = Math.min(0.4, (progressFactor - 0.7) * 0.6);
-    mediumProb = 0.35;
+const generateStatus = (hours, competencyIndex, subCompIndex, currentLevel) => {
+  // If this competency level is higher than current level, not covered at all
+  if (competencyIndex + 1 > currentLevel) {
+    return { status: null, covered: false };
   }
   
+  // Calculate how much of this competency should be covered
+  const compLevel = competencyIndex + 1;
+  const subCount = remcData[`c${compLevel}`].subCompetencies.length;
+  
+  // For current level, partially covered based on progress within that level
+  if (compLevel === currentLevel) {
+    // Calculate progress within current level
+    let progressInLevel;
+    if (currentLevel === 1) {
+      progressInLevel = hours / 11;
+    } else if (currentLevel === 2) {
+      progressInLevel = (hours - 11) / 4; // 12-15h = 4h range
+    } else if (currentLevel === 3) {
+      progressInLevel = (hours - 15) / 5; // 16-20h = 5h range
+    } else {
+      progressInLevel = Math.min(1, (hours - 20) / 10); // 21-30h
+    }
+    
+    // Determine if this sub-competency is covered
+    const coveredThreshold = (subCompIndex + 1) / subCount;
+    const covered = progressInLevel >= coveredThreshold * 0.8;
+    
+    if (!covered) {
+      return { status: null, covered: false };
+    }
+    
+    // For covered sub-competencies in current level, mostly medium or weak
+    const rand = Math.random();
+    if (rand < 0.2) return { status: 'fort', covered: true };
+    if (rand < 0.6) return { status: 'moyen', covered: true };
+    return { status: 'faible', covered: true };
+  }
+  
+  // For previous levels (compLevel < currentLevel), should be mostly mastered
+  const levelDifference = currentLevel - compLevel;
+  
+  // The older the competency, the more likely it's strong
+  const strongProb = Math.min(0.8, 0.4 + (levelDifference * 0.2));
+  const mediumProb = 0.4 - (levelDifference * 0.1);
+  
   const rand = Math.random();
-  if (rand < strongProb) return 'fort';
-  if (rand < strongProb + mediumProb) return 'moyen';
-  return 'faible';
+  if (rand < strongProb) return { status: 'fort', covered: true };
+  if (rand < strongProb + mediumProb) return { status: 'moyen', covered: true };
+  return { status: 'faible', covered: true };
 };
 
 // Generate evaluation for all competencies
 const generateEvaluation = (hours) => {
   const evaluation = {};
   const competencies = ['c1', 'c2', 'c3', 'c4'];
+  const currentLevel = getCurrentCompetencyLevel(hours);
   
   competencies.forEach((compId, compIndex) => {
     const comp = remcData[compId];
@@ -49,11 +171,14 @@ const generateEvaluation = (hours) => {
       id: compId,
       name: comp.name,
       title: comp.title,
-      subCompetencies: comp.subCompetencies.map((sub, subIndex) => ({
-        ...sub,
-        status: generateStatus(hours, compIndex + 1, subIndex, comp.subCompetencies.length),
-        covered: hours > (compIndex * 8 + subIndex * 1.5) // Progressive unlocking
-      }))
+      subCompetencies: comp.subCompetencies.map((sub, subIndex) => {
+        const result = generateStatus(hours, compIndex, subIndex, currentLevel);
+        return {
+          ...sub,
+          status: result.status,
+          covered: result.covered
+        };
+      })
     };
   });
   
@@ -103,7 +228,7 @@ const generateObjectives = (evaluation) => {
 };
 
 // Generate course history
-const generateCourseHistory = (hours, enrollmentDate) => {
+const generateCourseHistory = (hours, enrollmentDate, currentLevel) => {
   const hasSimulator = Math.random() > 0.4;
   const simulatorHours = hasSimulator ? randomInt(2, Math.min(10, Math.floor(hours * 0.3))) : 0;
   const realHours = hours - simulatorHours;
@@ -112,6 +237,14 @@ const generateCourseHistory = (hours, enrollmentDate) => {
   const now = new Date();
   const daysSinceLastLesson = randomInt(1, 14);
   const lastLessonDate = new Date(now.getTime() - daysSinceLastLesson * 24 * 60 * 60 * 1000);
+  
+  // Get context appropriate for current level
+  const contexts = getContextsForLevel(currentLevel);
+  const feedbacks = getFeedbackForLevel(currentLevel);
+  
+  // Get current competency info
+  const currentCompId = `c${currentLevel}`;
+  const currentComp = remcData[currentCompId];
   
   return {
     totalHours: hours,
@@ -123,8 +256,14 @@ const generateCourseHistory = (hours, enrollmentDate) => {
     vehicule: randomElement(profileData.vehicules),
     hasAAC: Math.random() > 0.85, // 15% chance of AAC
     hasLicense: false, // Learning, so no license yet
-    lastContext: randomElement(profileData.contextes_conduite),
-    studentFeedback: randomElement(profileData.retours_eleve)
+    lastContext: randomElement(contexts),
+    studentFeedback: randomElement(feedbacks),
+    currentCompetency: {
+      id: currentCompId,
+      name: currentComp.name,
+      title: currentComp.title
+    },
+    currentLevel: currentLevel
   };
 };
 
@@ -138,15 +277,25 @@ export const generateProfile = () => {
   const age = randomInt(16, 25);
   
   // Determine hours based on age and some randomness
-  // Younger students typically have fewer hours
+  // Generate hours across a wider range to test all competency levels
   let baseHours;
-  if (age <= 17) {
-    baseHours = randomInt(5, 25);
-  } else if (age <= 20) {
-    baseHours = randomInt(10, 35);
+  const levelRoll = Math.random();
+  if (levelRoll < 0.25) {
+    // C1 level: 5-11 hours
+    baseHours = randomInt(5, 11);
+  } else if (levelRoll < 0.50) {
+    // C2 level: 12-15 hours
+    baseHours = randomInt(12, 15);
+  } else if (levelRoll < 0.75) {
+    // C3 level: 16-20 hours
+    baseHours = randomInt(16, 20);
   } else {
-    baseHours = randomInt(8, 45);
+    // C4 level: 21-35 hours
+    baseHours = randomInt(21, 35);
   }
+  
+  // Get current competency level
+  const currentLevel = getCurrentCompetencyLevel(baseHours);
   
   // Enrollment date calculation
   const weeksOfTraining = Math.ceil(baseHours / 2);
@@ -175,8 +324,8 @@ export const generateProfile = () => {
   // Generate pedagogical objectives
   const objectifs = generateObjectives(evaluation);
   
-  // Generate course history
-  const courseHistory = generateCourseHistory(baseHours, enrollmentDate.toISOString().split('T')[0]);
+  // Generate course history with current level context
+  const courseHistory = generateCourseHistory(baseHours, enrollmentDate.toISOString().split('T')[0], currentLevel);
   
   // Calculate covered competencies count
   let coveredCount = 0;
@@ -211,7 +360,8 @@ export const generateProfile = () => {
     progression: {
       covered: coveredCount,
       total: totalCount,
-      percentage: Math.round((coveredCount / totalCount) * 100)
+      percentage: Math.round((coveredCount / totalCount) * 100),
+      currentLevel: currentLevel
     },
     generatedAt: new Date().toISOString()
   };
