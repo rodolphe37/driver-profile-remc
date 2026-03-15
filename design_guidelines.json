@@ -1,0 +1,182 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "REMC Pilot Dashboard",
+      "personality": "Professional, Educational, Modern Utility",
+      "archetype": "The Soft Utility",
+      "theme_mode": "light",
+      "language": "fr"
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Manrope, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl font-bold tracking-tight lg:text-5xl",
+        "h2": "text-3xl font-semibold tracking-tight first:mt-0",
+        "h3": "text-2xl font-semibold tracking-tight",
+        "h4": "text-xl font-semibold tracking-tight",
+        "p": "leading-7 [&:not(:first-child)]:mt-6",
+        "small": "text-sm font-medium leading-none"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "main": "hsl(221.2 83.2% 53.3%)",
+          "gradient": "from-blue-600 to-indigo-600",
+          "foreground": "hsl(210 40% 98%)"
+        },
+        "background": {
+          "default": "hsl(0 0% 100%)",
+          "subtle": "hsl(210 40% 96.1%)",
+          "card": "hsl(0 0% 100%)"
+        },
+        "competencies": {
+          "c1": {
+            "name": "Maitriser le véhicule",
+            "bg": "bg-blue-50",
+            "text": "text-blue-700",
+            "border": "border-blue-200",
+            "gradient": "from-blue-500 to-cyan-500",
+            "icon_color": "#3b82f6"
+          },
+          "c2": {
+            "name": "Appréhender la route",
+            "bg": "bg-emerald-50",
+            "text": "text-emerald-700",
+            "border": "border-emerald-200",
+            "gradient": "from-emerald-500 to-teal-500",
+            "icon_color": "#10b981"
+          },
+          "c3": {
+            "name": "Partager la route",
+            "bg": "bg-amber-50",
+            "text": "text-amber-700",
+            "border": "border-amber-200",
+            "gradient": "from-amber-500 to-orange-500",
+            "icon_color": "#f59e0b"
+          },
+          "c4": {
+            "name": "Pratiquer une conduite sûre",
+            "bg": "bg-purple-50",
+            "text": "text-purple-700",
+            "border": "border-purple-200",
+            "gradient": "from-purple-500 to-pink-500",
+            "icon_color": "#8b5cf6"
+          }
+        },
+        "status": {
+            "strong": "bg-emerald-100 text-emerald-800 border-emerald-200",
+            "medium": "bg-amber-100 text-amber-800 border-amber-200",
+            "weak": "bg-red-100 text-red-800 border-red-200"
+        }
+      }
+    },
+    "spacing": {
+      "container": "container mx-auto p-6 max-w-7xl",
+      "section_gap": "gap-8",
+      "card_padding": "p-6",
+      "grid_gap": "gap-6"
+    },
+    "visual_enhancers": {
+      "shadows": {
+        "card": "shadow-sm hover:shadow-md transition-shadow duration-200",
+        "floating": "shadow-lg shadow-indigo-500/10"
+      },
+      "borders": {
+        "default": "border border-slate-200",
+        "subtle": "border-b border-slate-100"
+      },
+      "radius": {
+        "default": "rounded-xl",
+        "small": "rounded-lg",
+        "full": "rounded-full"
+      }
+    }
+  },
+  "layout_strategy": {
+    "structure": "Sidebar + Main Content",
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6",
+      "profile_card": "col-span-12 md:col-span-4 lg:col-span-3",
+      "main_content": "col-span-12 md:col-span-8 lg:col-span-9",
+      "competency_grid": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+    }
+  },
+  "components": {
+    "ProfileGenerator": {
+      "path": "src/components/ProfileGenerator.js",
+      "description": "Main controller component. Contains the 'Générer un profil' button and manages the state of the current student.",
+      "styles": "Sticky header or prominent action bar. Uses a primary gradient button with an icon (Wand2).",
+      "dependencies": ["lucide-react", "remcData.js"]
+    },
+    "ProfileDisplay": {
+      "path": "src/components/ProfileDisplay.js",
+      "description": "Bento grid layout displaying student avatar, age, job, and psych-motor details.",
+      "layout_mode": "Bento Mode A (The Tetris Grid)",
+      "visuals": "Uses the 'Student Avatar' image. Cards have subtle borders and soft shadows."
+    },
+    "CourseHistory": {
+      "path": "src/components/CourseHistory.js",
+      "description": "Visual timeline or data table of driving lessons.",
+      "features": "Progress bars for total hours. Icons for 'Simulator' vs 'Vehicle'.",
+      "visuals": "Uses the 'Driving Dashboard' image as a subtle background or header for this section."
+    },
+    "CompetencyGrid": {
+      "path": "src/components/CompetencyGrid.js",
+      "description": "The core REMC visualization. A 4-column grid (C1-C4).",
+      "interaction": "Each sub-competency is a card/chip. Status (Acquis/En cours/Non acquis) is color-coded.",
+      "sub_components": ["CompetencyColumn", "SkillCard"]
+    },
+    "PedagogicalObjective": {
+      "path": "src/components/PedagogicalObjective.js",
+      "description": "Dynamic list of objectives based on weak competencies.",
+      "style": "Checklist style with 'Target' icon. Uses a highlighted background (blue-50) to draw attention."
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "key": "student_avatar_default",
+        "url": "https://images.unsplash.com/photo-1772987057599-2f1088c1e993?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwyfHxmcmVuY2glMjBzdHVkZW50JTIwcG9ydHJhaXQlMjBwcm9mZXNzaW9uYWx8ZW58MHx8fHwxNzczNTc0MjQ0fDA&ixlib=rb-4.1.0&q=85",
+        "alt": "Portrait d'étudiante",
+        "category": "Profile"
+      },
+      {
+        "key": "driving_dashboard_bg",
+        "url": "https://images.unsplash.com/photo-1721498022171-30028ebd91e1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHwyfHxkcml2aW5nJTIwc2Nob29sJTIwY2FyJTIwbW9kZXJufGVufDB8fHx8MTc3MzU3NDI0NXww&ixlib=rb-4.1.0&q=85",
+        "alt": "Intérieur voiture auto-école",
+        "category": "History"
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "mapping": {
+        "generate": "Wand2",
+        "profile": "User",
+        "history": "History",
+        "car": "Car",
+        "simulator": "MonitorPlay",
+        "target": "Crosshair",
+        "check": "CheckCircle2",
+        "alert": "AlertCircle"
+      }
+    }
+  },
+  "instructions_to_main_agent": {
+    "file_structure": "Use .js and .jsx extensions to match the existing Create React App environment. Do NOT create .tsx files unless you are sure the build system supports it (package.json suggests pure JS).",
+    "data_management": "Create a file 'src/remcData.js' to store the static REMC structure (C1-C4 hierarchies).",
+    "state_management": "Use React Context or simple State Lifting in App.js to manage the 'currentStudent' profile.",
+    "styling": "Use Tailwind CSS classes exclusively. Avoid inline styles.",
+    "language": "All UI text must be in FRENCH as per requirements.",
+    "accessibility": "Ensure all text colors meet APCA contrast guidelines against their backgrounds, especially in the competency grid."
+  },
+  "universal_guidelines": {
+    "ux": "Do not make users think. Use clear visual hierarchy. The 'Generate' button should be the most prominent action.",
+    "animation": "Use subtle staggered animations for the competency grid items appearing. (e.g., animate-in fade-in slide-in-from-bottom-2)",
+    "testing": "Add data-testid to all key interactables (e.g., 'btn-generate-profile', 'card-competency-c1')."
+  }
+}
