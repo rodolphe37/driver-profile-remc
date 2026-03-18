@@ -12,6 +12,8 @@ import { toast } from 'sonner';
 function App() {
   const [profile, setProfile] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState('random');
+  const [selectedAdvancement, setSelectedAdvancement] = useState('random');
 
   const handleGenerate = useCallback(() => {
     setIsGenerating(true);
@@ -19,10 +21,19 @@ function App() {
     // Small delay for animation effect
     setTimeout(() => {
       try {
-        const newProfile = generateProfile();
+        // Pass level and advancement options to generator
+        const options = {
+          level: selectedLevel === 'random' ? null : parseInt(selectedLevel),
+          advancement: selectedAdvancement
+        };
+        const newProfile = generateProfile(options);
         setProfile(newProfile);
+        
+        const levelNames = { 1: 'C1', 2: 'C2', 3: 'C3', 4: 'C4' };
+        const levelName = levelNames[newProfile.progression.currentLevel];
+        
         toast.success('Nouveau profil généré !', {
-          description: `${newProfile.nomComplet}, ${newProfile.age} ans - ${newProfile.courseHistory.totalHours}h de conduite`,
+          description: `${newProfile.nomComplet}, ${newProfile.age} ans - ${newProfile.courseHistory.totalHours}h de conduite (${levelName})`,
         });
       } catch (error) {
         console.error('Error generating profile:', error);
@@ -33,7 +44,7 @@ function App() {
         setIsGenerating(false);
       }
     }, 500);
-  }, []);
+  }, [selectedLevel, selectedAdvancement]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50" data-testid="app-container">
@@ -46,6 +57,10 @@ function App() {
             onGenerate={handleGenerate}
             isGenerating={isGenerating}
             hasProfile={!!profile}
+            selectedLevel={selectedLevel}
+            setSelectedLevel={setSelectedLevel}
+            selectedAdvancement={selectedAdvancement}
+            setSelectedAdvancement={setSelectedAdvancement}
           />
         </div>
       </header>

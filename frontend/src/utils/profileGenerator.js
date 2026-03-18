@@ -17,6 +17,40 @@ const getCurrentCompetencyLevel = (hours) => {
   return 4; // C4: 20h+
 };
 
+// Get hours range for a specific level and advancement
+const getHoursForLevelAndAdvancement = (level, advancement) => {
+  const ranges = {
+    1: { // C1: 0-11h
+      debut: { min: 3, max: 5 },
+      milieu: { min: 6, max: 8 },
+      fin: { min: 9, max: 11 },
+      random: { min: 3, max: 11 }
+    },
+    2: { // C2: 12-15h
+      debut: { min: 12, max: 12 },
+      milieu: { min: 13, max: 14 },
+      fin: { min: 15, max: 15 },
+      random: { min: 12, max: 15 }
+    },
+    3: { // C3: 16-20h
+      debut: { min: 16, max: 17 },
+      milieu: { min: 18, max: 19 },
+      fin: { min: 20, max: 20 },
+      random: { min: 16, max: 20 }
+    },
+    4: { // C4: 21h+
+      debut: { min: 21, max: 24 },
+      milieu: { min: 25, max: 30 },
+      fin: { min: 31, max: 40 },
+      random: { min: 21, max: 40 }
+    }
+  };
+  
+  const levelRange = ranges[level] || ranges[1];
+  const advRange = levelRange[advancement] || levelRange.random;
+  return randomInt(advRange.min, advRange.max);
+};
+
 // Get appropriate driving contexts based on competency level
 const getContextsForLevel = (level) => {
   const contexts = {
@@ -268,7 +302,9 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel) => {
 };
 
 // Main profile generation function
-export const generateProfile = () => {
+export const generateProfile = (options = {}) => {
+  const { level = null, advancement = 'random' } = options;
+  
   // Basic info
   const isFemale = Math.random() > 0.5;
   const gender = isFemale ? 'feminin' : 'masculin';
@@ -276,22 +312,23 @@ export const generateProfile = () => {
   const nom = randomElement(profileData.noms);
   const age = randomInt(16, 25);
   
-  // Determine hours based on age and some randomness
-  // Generate hours across a wider range to test all competency levels
+  // Determine hours based on selected level and advancement, or random
   let baseHours;
-  const levelRoll = Math.random();
-  if (levelRoll < 0.25) {
-    // C1 level: 5-11 hours
-    baseHours = randomInt(5, 11);
-  } else if (levelRoll < 0.50) {
-    // C2 level: 12-15 hours
-    baseHours = randomInt(12, 15);
-  } else if (levelRoll < 0.75) {
-    // C3 level: 16-20 hours
-    baseHours = randomInt(16, 20);
+  if (level !== null) {
+    // User selected a specific level
+    baseHours = getHoursForLevelAndAdvancement(level, advancement);
   } else {
-    // C4 level: 21-35 hours
-    baseHours = randomInt(21, 35);
+    // Random level selection
+    const levelRoll = Math.random();
+    if (levelRoll < 0.25) {
+      baseHours = randomInt(5, 11); // C1
+    } else if (levelRoll < 0.50) {
+      baseHours = randomInt(12, 15); // C2
+    } else if (levelRoll < 0.75) {
+      baseHours = randomInt(16, 20); // C3
+    } else {
+      baseHours = randomInt(21, 35); // C4
+    }
   }
   
   // Get current competency level
