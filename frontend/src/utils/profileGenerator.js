@@ -9,6 +9,110 @@ const randomElements = (arr, count) => {
   return shuffled.slice(0, count);
 };
 
+// Trap/Error definitions for role-play exercises
+const trapDefinitions = {
+  coordination: {
+    id: 'coordination',
+    label: 'Coordination',
+    description: 'Difficulté à coordonner les pieds (embrayage/accélérateur) et les mains (volant/levier de vitesse)',
+    symptoms: [
+      'Cale fréquemment au démarrage',
+      'Accélérations saccadées',
+      'Difficulté à passer les vitesses en douceur',
+      'Mouvements désynchronisés'
+    ],
+    affectedCompetencies: ['c1d', 'c1e', 'c1f'],
+    levels: [1, 2]
+  },
+  commandes: {
+    id: 'commandes',
+    label: 'Commandes',
+    description: 'Confusion entre les différentes commandes du véhicule',
+    symptoms: [
+      'Confond les pédales (frein/accélérateur)',
+      'Cherche les commandes (clignotants, essuie-glaces)',
+      'Oublie de desserrer le frein à main',
+      'Erreur de manipulation des feux'
+    ],
+    affectedCompetencies: ['c1a', 'c1b', 'c1h'],
+    levels: [1]
+  },
+  volant: {
+    id: 'volant',
+    label: 'Volant',
+    description: 'Problèmes de tenue et de maniement du volant',
+    symptoms: [
+      'Trajectoire en zigzag',
+      'Sur-braquage dans les virages',
+      'Sous-braquage en courbe',
+      'Mauvais placement des mains',
+      'Croisement des mains inadapté'
+    ],
+    affectedCompetencies: ['c1c', 'c1g', 'c1i'],
+    levels: [1, 2]
+  },
+  observation: {
+    id: 'observation',
+    label: 'Observation',
+    description: 'Défaut de contrôle visuel et de prise d\'information',
+    symptoms: [
+      'Oublie de regarder les rétroviseurs',
+      'Ne contrôle pas les angles morts',
+      'Regard fixé sur le capot',
+      'Ne détecte pas la signalisation'
+    ],
+    affectedCompetencies: ['c1h', 'c2a', 'c3a'],
+    levels: [1, 2, 3]
+  },
+  vitesse: {
+    id: 'vitesse',
+    label: 'Vitesse',
+    description: 'Difficulté à adapter et doser la vitesse',
+    symptoms: [
+      'Roule trop vite pour la situation',
+      'Roule trop lentement (gêne la circulation)',
+      'Freinages brusques et tardifs',
+      'Accélérations inadaptées'
+    ],
+    affectedCompetencies: ['c1e', 'c2c', 'c3a'],
+    levels: [2, 3]
+  },
+  stress: {
+    id: 'stress',
+    label: 'Stress',
+    description: 'Blocage lié au stress et à l\'anxiété',
+    symptoms: [
+      'Se fige dans les situations complexes',
+      'Panique aux intersections',
+      'Perd ses moyens en présence d\'autres véhicules',
+      'Respiration saccadée, mains crispées'
+    ],
+    affectedCompetencies: ['c2d', 'c3b', 'c3f'],
+    levels: [2, 3, 4]
+  }
+};
+
+// Get a trap based on selection and current level
+const getTrap = (trapSelection, currentLevel) => {
+  if (trapSelection === 'none') return null;
+  
+  if (trapSelection === 'random') {
+    // Filter traps that are valid for the current level
+    const validTraps = Object.values(trapDefinitions).filter(trap => 
+      trap.levels.includes(currentLevel)
+    );
+    if (validTraps.length === 0) return null;
+    return validTraps[Math.floor(Math.random() * validTraps.length)];
+  }
+  
+  const trap = trapDefinitions[trapSelection];
+  // Return trap only if it's valid for the current level
+  if (trap && trap.levels.includes(currentLevel)) {
+    return trap;
+  }
+  return null;
+};
+
 // Determine current competency level based on hours
 const getCurrentCompetencyLevel = (hours) => {
   if (hours <= 11) return 1; // C1: 0-11h
@@ -303,12 +407,20 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel) => {
 
 // Main profile generation function
 export const generateProfile = (options = {}) => {
-  const { level = null, advancement = 'random' } = options;
+  const { level = null, advancement = 'random', gender = 'random', trap = 'none' } = options;
   
-  // Basic info
-  const isFemale = Math.random() > 0.5;
-  const gender = isFemale ? 'feminin' : 'masculin';
-  const prenom = randomElement(profileData.prenoms[gender]);
+  // Determine gender
+  let isFemale;
+  if (gender === 'femme') {
+    isFemale = true;
+  } else if (gender === 'homme') {
+    isFemale = false;
+  } else {
+    isFemale = Math.random() > 0.5;
+  }
+  
+  const genderKey = isFemale ? 'feminin' : 'masculin';
+  const prenom = randomElement(profileData.prenoms[genderKey]);
   const nom = randomElement(profileData.noms);
   const age = randomInt(16, 25);
   
@@ -333,6 +445,9 @@ export const generateProfile = (options = {}) => {
   
   // Get current competency level
   const currentLevel = getCurrentCompetencyLevel(baseHours);
+  
+  // Get trap/error for role-play (filtered by current level)
+  const selectedTrap = getTrap(trap, currentLevel);
   
   // Enrollment date calculation
   const weeksOfTraining = Math.ceil(baseHours / 2);
@@ -394,6 +509,7 @@ export const generateProfile = (options = {}) => {
     courseHistory,
     evaluation,
     objectifs,
+    trap: selectedTrap,
     progression: {
       covered: coveredCount,
       total: totalCount,

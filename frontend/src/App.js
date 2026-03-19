@@ -6,6 +6,7 @@ import ProfileDisplay from './components/ProfileDisplay';
 import CourseHistory from './components/CourseHistory';
 import CompetencyGrid from './components/CompetencyGrid';
 import PedagogicalObjective from './components/PedagogicalObjective';
+import TrapDisplay from './components/TrapDisplay';
 import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner';
 
@@ -14,6 +15,8 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState('random');
   const [selectedAdvancement, setSelectedAdvancement] = useState('random');
+  const [selectedGender, setSelectedGender] = useState('random');
+  const [selectedTrap, setSelectedTrap] = useState('none');
 
   const handleGenerate = useCallback(() => {
     setIsGenerating(true);
@@ -21,10 +24,12 @@ function App() {
     // Small delay for animation effect
     setTimeout(() => {
       try {
-        // Pass level and advancement options to generator
+        // Pass all options to generator
         const options = {
           level: selectedLevel === 'random' ? null : parseInt(selectedLevel),
-          advancement: selectedAdvancement
+          advancement: selectedAdvancement,
+          gender: selectedGender,
+          trap: selectedTrap
         };
         const newProfile = generateProfile(options);
         setProfile(newProfile);
@@ -32,8 +37,13 @@ function App() {
         const levelNames = { 1: 'C1', 2: 'C2', 3: 'C3', 4: 'C4' };
         const levelName = levelNames[newProfile.progression.currentLevel];
         
+        let description = `${newProfile.nomComplet}, ${newProfile.age} ans - ${newProfile.courseHistory.totalHours}h de conduite (${levelName})`;
+        if (newProfile.trap) {
+          description += ` • Piège: ${newProfile.trap.label}`;
+        }
+        
         toast.success('Nouveau profil généré !', {
-          description: `${newProfile.nomComplet}, ${newProfile.age} ans - ${newProfile.courseHistory.totalHours}h de conduite (${levelName})`,
+          description: description,
         });
       } catch (error) {
         console.error('Error generating profile:', error);
@@ -44,7 +54,7 @@ function App() {
         setIsGenerating(false);
       }
     }, 500);
-  }, [selectedLevel, selectedAdvancement]);
+  }, [selectedLevel, selectedAdvancement, selectedGender, selectedTrap]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50" data-testid="app-container">
@@ -61,6 +71,10 @@ function App() {
             setSelectedLevel={setSelectedLevel}
             selectedAdvancement={selectedAdvancement}
             setSelectedAdvancement={setSelectedAdvancement}
+            selectedGender={selectedGender}
+            setSelectedGender={setSelectedGender}
+            selectedTrap={selectedTrap}
+            setSelectedTrap={setSelectedTrap}
           />
         </div>
       </header>
@@ -113,6 +127,7 @@ function App() {
             {/* Left Column - Profile & History */}
             <div className="lg:col-span-4 space-y-6">
               <ProfileDisplay profile={profile} />
+              {profile.trap && <TrapDisplay trap={profile.trap} />}
               <CourseHistory 
                 courseHistory={profile.courseHistory} 
                 evaluation={profile.evaluation}
