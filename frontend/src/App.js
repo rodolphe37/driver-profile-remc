@@ -58,11 +58,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50" data-testid="app-container">
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-center" richColors />
       
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm">
-        <div className="container mx-auto px-4 py-4 max-w-7xl">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-slate-200 shadow-sm">
+        <div className="container mx-auto px-3 py-3 md:px-4 md:py-4 max-w-7xl">
           <ProfileGenerator 
             onGenerate={handleGenerate}
             isGenerating={isGenerating}
@@ -80,13 +80,13 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-3 py-4 md:px-4 md:py-6 max-w-7xl">
         {!profile ? (
           // Empty State
-          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center" data-testid="empty-state">
-            <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/10">
+          <div className="flex flex-col items-center justify-center min-h-[50vh] md:min-h-[60vh] text-center px-4" data-testid="empty-state">
+            <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl md:rounded-3xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mb-4 md:mb-6 shadow-lg shadow-blue-500/10">
               <svg 
-                className="w-16 h-16 text-blue-500" 
+                className="w-10 h-10 md:w-14 md:h-14 text-blue-500" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -99,33 +99,32 @@ function App() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-2" style={{ fontFamily: 'Manrope, sans-serif' }}>
+            <h2 className="text-lg md:text-2xl font-bold text-slate-800 mb-2" style={{ fontFamily: 'Manrope, sans-serif' }}>
               Aucun profil généré
             </h2>
-            <p className="text-slate-500 max-w-md mb-6">
-              Cliquez sur le bouton "Générer un Profil" pour créer un profil d'élève fictif 
-              basé sur le référentiel REMC.
+            <p className="text-sm md:text-base text-slate-500 max-w-md mb-4 md:mb-6">
+              Cliquez sur "Générer" pour créer un profil d'élève fictif basé sur le REMC.
             </p>
-            <div className="flex flex-wrap justify-center gap-3 text-sm">
-              <div className="px-4 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                C1: Maniement du véhicule
+            <div className="flex flex-wrap justify-center gap-2 text-xs md:text-sm">
+              <div className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                C1: Maniement
               </div>
-              <div className="px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                C2: Appréhender la route
+              <div className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                C2: Route
               </div>
-              <div className="px-4 py-2 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                C3: Conditions difficiles
+              <div className="px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                C3: Difficile
               </div>
-              <div className="px-4 py-2 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-                C4: Conduite autonome
+              <div className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                C4: Autonome
               </div>
             </div>
           </div>
         ) : (
           // Profile Display Grid
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6" data-testid="profile-content">
-            {/* Left Column - Profile & History */}
-            <div className="lg:col-span-4 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6" data-testid="profile-content">
+            {/* Left Column - Profile & Trap */}
+            <div className="lg:col-span-4 space-y-4 md:space-y-6">
               <ProfileDisplay profile={profile} />
               {profile.trap && <TrapDisplay trap={profile.trap} />}
               <CourseHistory 
@@ -135,7 +134,7 @@ function App() {
             </div>
 
             {/* Right Column - Competencies & Objectives */}
-            <div className="lg:col-span-8 space-y-6">
+            <div className="lg:col-span-8 space-y-4 md:space-y-6">
               <CompetencyGrid evaluation={profile.evaluation} />
               <PedagogicalObjective objectives={profile.objectifs} />
             </div>
@@ -144,17 +143,17 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white/50 mt-12">
-        <div className="container mx-auto px-4 py-6 max-w-7xl">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+      <footer className="border-t border-slate-200 bg-white/50 mt-8 md:mt-12">
+        <div className="container mx-auto px-3 py-4 md:px-4 md:py-6 max-w-7xl">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs md:text-sm text-slate-500">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
                 TP
               </div>
-              <span>Générateur de Profil TPECSR</span>
+              <span>TPECSR</span>
             </div>
-            <p>
-              Basé sur le Référentiel pour l'Éducation à une Mobilité Citoyenne (REMC)
+            <p className="text-center">
+              Basé sur le REMC
             </p>
           </div>
         </div>

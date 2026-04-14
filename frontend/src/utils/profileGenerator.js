@@ -92,23 +92,49 @@ const trapDefinitions = {
   }
 };
 
-// Get a trap based on selection and current level
-const getTrap = (trapSelection, currentLevel) => {
+// Get a trap based on selection, current level, and covered competencies
+const getTrap = (trapSelection, currentLevel, evaluation) => {
   if (trapSelection === 'none') return null;
   
+  // Get list of covered sub-competencies
+  const coveredSubComps = new Set();
+  Object.values(evaluation).forEach(comp => {
+    comp.subCompetencies.forEach(sub => {
+      if (sub.covered) {
+        coveredSubComps.add(sub.id);
+      }
+    });
+  });
+  
+  // Filter traps to only those whose affected competencies are covered
+  const filterTrapByCoverage = (trap) => {
+    // Check if at least one affected competency is covered
+    return trap.affectedCompetencies.some(compId => coveredSubComps.has(compId));
+  };
+  
   if (trapSelection === 'random') {
-    // Filter traps that are valid for the current level
+    // Filter traps that are valid for the current level AND have covered competencies
     const validTraps = Object.values(trapDefinitions).filter(trap => 
-      trap.levels.includes(currentLevel)
+      trap.levels.includes(currentLevel) && filterTrapByCoverage(trap)
     );
     if (validTraps.length === 0) return null;
-    return validTraps[Math.floor(Math.random() * validTraps.length)];
+    
+    const selectedTrap = validTraps[Math.floor(Math.random() * validTraps.length)];
+    // Filter affected competencies to only show covered ones
+    return {
+      ...selectedTrap,
+      affectedCompetencies: selectedTrap.affectedCompetencies.filter(compId => coveredSubComps.has(compId))
+    };
   }
   
   const trap = trapDefinitions[trapSelection];
-  // Return trap only if it's valid for the current level
-  if (trap && trap.levels.includes(currentLevel)) {
-    return trap;
+  // Return trap only if it's valid for the current level AND has covered competencies
+  if (trap && trap.levels.includes(currentLevel) && filterTrapByCoverage(trap)) {
+    // Filter affected competencies to only show covered ones
+    return {
+      ...trap,
+      affectedCompetencies: trap.affectedCompetencies.filter(compId => coveredSubComps.has(compId))
+    };
   }
   return null;
 };
@@ -446,9 +472,6 @@ export const generateProfile = (options = {}) => {
   // Get current competency level
   const currentLevel = getCurrentCompetencyLevel(baseHours);
   
-  // Get trap/error for role-play (filtered by current level)
-  const selectedTrap = getTrap(trap, currentLevel);
-  
   // Enrollment date calculation
   const weeksOfTraining = Math.ceil(baseHours / 2);
   const enrollmentDate = new Date();
@@ -472,6 +495,9 @@ export const generateProfile = (options = {}) => {
   
   // Generate evaluation based on hours
   const evaluation = generateEvaluation(baseHours);
+  
+  // Get trap/error for role-play (filtered by current level AND covered competencies)
+  const selectedTrap = getTrap(trap, currentLevel, evaluation);
   
   // Generate pedagogical objectives
   const objectifs = generateObjectives(evaluation);
