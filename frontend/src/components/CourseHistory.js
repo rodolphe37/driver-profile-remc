@@ -99,13 +99,25 @@ const CourseHistory = ({ courseHistory, evaluation }) => {
             </div>
           </div>
 
-          {/* Progress to 20h minimum */}
+          {/* Progress towards estimated hours */}
           <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-slate-600">Progression vers 20h minimum</span>
-              <span className="text-sm font-bold text-slate-800">{Math.min(100, Math.round((courseHistory.totalHours / 20) * 100))}%</span>
+              <span className="text-sm text-slate-600">
+                Progression vers {courseHistory.heuresEstimees || 20}h estimées
+              </span>
+              <span className="text-sm font-bold text-slate-800">
+                {Math.min(100, Math.round((courseHistory.totalHours / (courseHistory.heuresEstimees || 20)) * 100))}%
+              </span>
             </div>
-            <Progress value={Math.min(100, (courseHistory.totalHours / 20) * 100)} className="h-2" />
+            <Progress 
+              value={Math.min(100, (courseHistory.totalHours / (courseHistory.heuresEstimees || 20)) * 100)} 
+              className="h-2" 
+            />
+            {courseHistory.evaluationDepart && (
+              <p className="text-xs text-slate-500 mt-2">
+                Éval. départ : <span className="font-medium">{courseHistory.evaluationDepart.niveau}</span>
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

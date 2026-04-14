@@ -877,7 +877,7 @@ const generateObjectives = (evaluation) => {
 };
 
 // Generate course history
-const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation) => {
+const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation, besoinSpecial) => {
   const hasSimulator = Math.random() > 0.4;
   const simulatorHours = hasSimulator ? randomInt(2, Math.min(10, Math.floor(hours * 0.3))) : 0;
   const realHours = hours - simulatorHours;
@@ -889,6 +889,70 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation) 
   
   // Get last session details based on evaluation
   const lastSession = generateLastSessionDetails(evaluation);
+  
+  // Generate estimated hours from initial evaluation (évaluation de départ)
+  // Realistic ranges based on French driving school standards:
+  // - Minimum legal: 20h
+  // - Average student: 25-35h
+  // - Student with difficulties or special needs: 30-45h
+  // - Quick learner: 20-25h
+  
+  let heuresEstimees;
+  let evaluationDepart;
+  
+  // Determine estimated hours based on various factors
+  const hasSpecialNeeds = besoinSpecial !== null;
+  const difficultyFactor = Math.random(); // 0 = easy learner, 1 = needs more practice
+  
+  if (hasSpecialNeeds) {
+    // Students with special needs typically need more hours
+    heuresEstimees = randomInt(30, 40);
+    evaluationDepart = {
+      niveau: "Adaptation nécessaire",
+      commentaire: "Formation adaptée recommandée",
+      facteur: "besoin spécifique"
+    };
+  } else if (difficultyFactor < 0.2) {
+    // Quick learner (20%)
+    heuresEstimees = randomInt(20, 25);
+    evaluationDepart = {
+      niveau: "Bonnes aptitudes",
+      commentaire: "Bonne coordination, apprentissage rapide prévu",
+      facteur: "facilité"
+    };
+  } else if (difficultyFactor < 0.5) {
+    // Average student (30%)
+    heuresEstimees = randomInt(25, 30);
+    evaluationDepart = {
+      niveau: "Aptitudes moyennes",
+      commentaire: "Progression normale attendue",
+      facteur: "standard"
+    };
+  } else if (difficultyFactor < 0.8) {
+    // Needs more practice (30%)
+    heuresEstimees = randomInt(28, 35);
+    evaluationDepart = {
+      niveau: "Travail supplémentaire",
+      commentaire: "Coordination à travailler, prévoir heures supplémentaires",
+      facteur: "travail"
+    };
+  } else {
+    // Significant difficulties (20%)
+    heuresEstimees = randomInt(32, 42);
+    evaluationDepart = {
+      niveau: "Difficultés identifiées",
+      commentaire: "Appréhension au volant, formation longue probable",
+      facteur: "difficulté"
+    };
+  }
+  
+  // Make sure estimated hours is at least current hours + some buffer
+  if (heuresEstimees < hours + 3) {
+    heuresEstimees = hours + randomInt(3, 8);
+  }
+  
+  // Cap at realistic maximum
+  heuresEstimees = Math.min(heuresEstimees, 50);
   
   // Get current competency info
   const currentCompId = `c${currentLevel}`;
@@ -904,6 +968,9 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation) 
     vehicule: randomElement(profileData.vehicules),
     hasAAC: Math.random() > 0.85, // 15% chance of AAC
     hasLicense: false, // Learning, so no license yet
+    // Estimated hours from initial evaluation
+    heuresEstimees: heuresEstimees,
+    evaluationDepart: evaluationDepart,
     // New: detailed last session info
     lastSession: lastSession,
     // Legacy fields for backward compatibility
@@ -989,8 +1056,8 @@ export const generateProfile = (options = {}) => {
   // Generate pedagogical objectives
   const objectifs = generateObjectives(evaluation);
   
-  // Generate course history with current level context and evaluation
-  const courseHistory = generateCourseHistory(baseHours, enrollmentDate.toISOString().split('T')[0], currentLevel, evaluation);
+  // Generate course history with current level context, evaluation and special needs
+  const courseHistory = generateCourseHistory(baseHours, enrollmentDate.toISOString().split('T')[0], currentLevel, evaluation, besoinSpecial);
   
   // Calculate covered competencies count
   let coveredCount = 0;
