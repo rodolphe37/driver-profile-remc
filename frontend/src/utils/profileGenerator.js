@@ -954,9 +954,9 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation, 
   // Cap at realistic maximum
   heuresEstimees = Math.min(heuresEstimees, 50);
   
-  // AAC (Apprentissage Anticipé de la Conduite) is only available for students aged 15-18
-  // In France, AAC allows students to start learning at 15 and drive with a parent until 18
-  const isAACEligible = age >= 15 && age <= 18;
+  // AAC (Apprentissage Anticipé de la Conduite) is only available for students aged 15-17
+  // In France, AAC allows students to start learning at 15 and drive with a parent until 17
+  const isAACEligible = age >= 15 && age <= 17;
   const hasAAC = isAACEligible && Math.random() > 0.6; // 40% chance for eligible students
   
   // Get current competency info
@@ -1049,8 +1049,8 @@ export const generateProfile = (options = {}) => {
   // Hobbies (2-3 random)
   const hobbies = randomElements(profileData.hobbies, randomInt(2, 3));
   
-  // Special needs (80% chance of none)
-  const besoinSpecial = Math.random() > 0.8 ? 
+  // Special needs (90% chance of none - rarely present)
+  const besoinSpecial = Math.random() > 0.9 ? 
     randomElement(profileData.besoins_speciaux.filter(b => b !== null)) : null;
   
   // Generate evaluation based on hours

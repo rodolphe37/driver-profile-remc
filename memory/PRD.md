@@ -15,7 +15,7 @@ Create a React + TypeScript application that generates realistic fictitious stud
 5. Weighted/realistic profile generation based on driving hours
 6. Coherent progression: competencies unlocked based on hours
 
-## What's Been Implemented (January 2026)
+## What's Been Implemented (January-February 2026)
 
 ### Features Completed:
 - **Profile Generation**: Randomized but weighted student profiles
@@ -29,6 +29,8 @@ Create a React + TypeScript application that generates realistic fictitious stud
   - C3: 16-20h (difficult conditions, highway)
   - C4: 21h+ (autonomous driving)
 - **Pedagogical Objectives**: Auto-generated objectives based on weak competencies
+- **AAC (Conduite Accompagnée)**: Badge conditionnel pour élèves de 15-17 ans uniquement
+- **Besoin spécifique**: Apparaît rarement (~10% des profils) pour plus de réalisme
 
 ### Hour Ranges by Level & Advancement:
 | Level | Début | Milieu | Fin |
