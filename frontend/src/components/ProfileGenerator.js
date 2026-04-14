@@ -129,12 +129,15 @@ const ProfileGenerator = ({
               )}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-[95vw] sm:max-w-[450px] max-h-[90vh] p-0">
+          <DialogContent className="max-w-[95vw] sm:max-w-[450px] max-h-[90vh] p-0" aria-describedby="options-description">
             <DialogHeader className="p-4 pb-2 border-b border-slate-100">
               <DialogTitle className="flex items-center gap-2 text-lg">
                 <Settings2 className="w-5 h-5 text-blue-600" />
                 Options de génération
               </DialogTitle>
+              <p id="options-description" className="sr-only">
+                Configurez le genre, niveau, avancement et piège pédagogique pour la génération du profil
+              </p>
             </DialogHeader>
             
             <ScrollArea className="max-h-[70vh]">
