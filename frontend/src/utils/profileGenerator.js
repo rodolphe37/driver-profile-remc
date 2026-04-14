@@ -182,12 +182,20 @@ const getHoursForLevelAndAdvancement = (level, advancement) => {
 };
 
 // Specific contexts and feedbacks for each sub-competency
+// Each sub-competency has coherent pairs of (lieu, exercice)
 const subCompetencyDetails = {
-  // C1 - Maniement du véhicule
+  // ===== C1 - Maîtrise du véhicule (trafic faible ou nul) =====
+  // Lieux possibles: Parking auto-école, zone industrielle, quartier calme
+  
   c1a: {
-    title: "Vérifications intérieures et extérieures",
-    contexts: ["Parking auto-école", "Devant l'auto-école", "Parking couvert"],
-    situations: ["Vérification des niveaux", "Contrôle des feux", "Réglage des rétroviseurs", "Tour du véhicule"],
+    title: "Commandes et vérifications",
+    // Paires cohérentes (lieu + exercice)
+    sessions: [
+      { lieu: "Parking auto-école", exercice: "Tour du véhicule" },
+      { lieu: "Parking auto-école", exercice: "Check intérieur/extérieur" },
+      { lieu: "Parking auto-école", exercice: "Vérification des niveaux" },
+      { lieu: "Parking auto-école", exercice: "Contrôle des feux et clignotants" }
+    ],
     feedbacks: [
       "J'ai bien compris l'ordre des vérifications",
       "Je dois encore mémoriser toutes les commandes",
@@ -197,142 +205,196 @@ const subCompetencyDetails = {
   },
   c1b: {
     title: "Installation au poste de conduite",
-    contexts: ["Parking auto-école", "Devant l'auto-école"],
-    situations: ["Réglage du siège", "Réglage des rétroviseurs", "Position de conduite", "Mise de la ceinture"],
+    sessions: [
+      { lieu: "Parking auto-école", exercice: "Réglage du siège" },
+      { lieu: "Parking auto-école", exercice: "Réglage des rétroviseurs" },
+      { lieu: "Parking auto-école", exercice: "Installation complète en autonomie" },
+      { lieu: "Parking auto-école", exercice: "Mise de la ceinture et check départ" }
+    ],
     feedbacks: [
       "Je m'installe plus rapidement maintenant",
       "J'oublie encore parfois de régler les rétros",
       "La position de conduite devient confortable",
-      "Je dois penser à tout vérifier avant de démarrer"
+      "Je fais tout dans le bon ordre maintenant"
     ]
   },
   c1c: {
     title: "Tenue du volant et trajectoire",
-    contexts: ["Parking vide", "Piste privée", "Quartier calme", "Zone résidentielle"],
-    situations: ["Slalom entre plots", "Ligne droite", "Virage à droite", "Virage à gauche", "Courbes enchaînées"],
+    sessions: [
+      { lieu: "Parking auto-école", exercice: "Slalom entre plots" },
+      { lieu: "Parking auto-école", exercice: "Trajectoires précises" },
+      { lieu: "Zone industrielle", exercice: "Slalom large" },
+      { lieu: "Zone industrielle", exercice: "Maintien de trajectoire" }
+    ],
     feedbacks: [
       "Je tiens mieux le volant maintenant",
-      "Ma trajectoire est encore en zigzag",
+      "Ma trajectoire est plus précise",
       "Je croise mieux les mains dans les virages",
-      "Je dois regarder plus loin pour anticiper"
+      "Le slalom devient plus fluide"
     ]
   },
   c1d: {
-    title: "Démarrage et arrêt",
-    contexts: ["Parking plat", "Légère montée", "Légère descente", "Parking en pente"],
-    situations: ["Démarrage à plat", "Démarrage en côte", "Arrêt progressif", "Arrêt d'urgence simulé"],
+    title: "Démarrer et s'arrêter",
+    sessions: [
+      { lieu: "Quartier calme", exercice: "Répétitions démarrage à plat" },
+      { lieu: "Quartier calme", exercice: "Arrêts progressifs" },
+      { lieu: "Quartier calme", exercice: "Démarrage en légère côte" },
+      { lieu: "Quartier calme", exercice: "Enchaînement démarrage-arrêt" }
+    ],
     feedbacks: [
       "Je cale moins qu'avant",
-      "Le démarrage en côte reste difficile",
+      "Le démarrage devient plus fluide",
       "J'arrive à doser le point de patinage",
-      "Je freine encore trop brusquement"
+      "Mes arrêts sont plus doux"
     ]
   },
   c1e: {
     title: "Dosage accélération et freinage",
-    contexts: ["Route calme", "Zone 30", "Parking", "Piste privée"],
-    situations: ["Accélération progressive", "Freinage doux", "Maintien de l'allure", "Ralentissement anticipé"],
+    sessions: [
+      { lieu: "Quartier calme", exercice: "Accélérations progressives" },
+      { lieu: "Quartier calme", exercice: "Freinages doux" },
+      { lieu: "Zone industrielle", exercice: "Maintien d'allure constante" },
+      { lieu: "Zone industrielle", exercice: "Ralentissements anticipés" }
+    ],
     feedbacks: [
       "Je dose mieux l'accélérateur",
       "Mes freinages sont plus souples",
-      "J'accélère encore trop fort",
-      "Je dois anticiper les ralentissements"
+      "J'accélère de manière plus progressive",
+      "Je freine moins brusquement"
     ]
   },
   c1f: {
     title: "Utilisation de la boîte de vitesse",
-    contexts: ["Route calme", "Zone résidentielle", "Route départementale peu fréquentée"],
-    situations: ["Passage 1ère-2ème", "Passage 2ème-3ème", "Rétrogradage", "Passage de toutes les vitesses"],
+    sessions: [
+      { lieu: "Quartier calme", exercice: "Passage 1ère-2ème" },
+      { lieu: "Quartier calme", exercice: "Montée des rapports jusqu'à la 4ème" },
+      { lieu: "Quartier calme", exercice: "Rétrogradage 3ème-2ème" },
+      { lieu: "Quartier calme", exercice: "Descente des rapports" }
+    ],
     feedbacks: [
       "Je trouve mieux les vitesses",
-      "Je dois encore regarder le levier",
+      "Je ne regarde plus le levier",
       "Le rétrogradage devient plus fluide",
       "Je passe les vitesses au bon régime"
     ]
   },
   c1g: {
-    title: "Direction en ligne droite et courbe",
-    contexts: ["Route de campagne", "Zone résidentielle", "Quartier calme"],
-    situations: ["Ligne droite prolongée", "Virage serré", "Enchaînement de courbes", "Adaptation de trajectoire"],
+    title: "Trajectoire en ligne droite et courbe",
+    sessions: [
+      { lieu: "Quartier calme", exercice: "Suivi de voie en ligne droite" },
+      { lieu: "Quartier calme", exercice: "Virages simples à droite" },
+      { lieu: "Quartier calme", exercice: "Virages simples à gauche" },
+      { lieu: "Quartier calme", exercice: "Enchaînement de courbes" }
+    ],
     feedbacks: [
       "Je maintiens mieux ma trajectoire",
       "Je m'améliore dans les virages",
-      "Je dois mieux adapter ma vitesse en courbe",
+      "Je regarde plus loin pour anticiper",
       "L'enchaînement des virages est plus fluide"
     ]
   },
   c1h: {
-    title: "Observation et avertissement",
-    contexts: ["Quartier résidentiel", "Zone avec piétons", "Parking animé"],
-    situations: ["Contrôle rétroviseurs", "Vérification angles morts", "Utilisation clignotants", "Avertisseur sonore"],
+    title: "Regarder et avertir",
+    sessions: [
+      { lieu: "Parking auto-école", exercice: "Contrôles visuels systématiques" },
+      { lieu: "Quartier calme", exercice: "Utilisation des clignotants" },
+      { lieu: "Quartier calme", exercice: "Vérification des angles morts" },
+      { lieu: "Quartier calme", exercice: "Contrôles rétroviseurs avant manœuvre" }
+    ],
     feedbacks: [
       "Je regarde plus souvent mes rétros",
-      "J'oublie encore les angles morts",
-      "J'utilise mieux les clignotants",
-      "Je dois mieux anticiper les dangers"
+      "Je n'oublie plus les angles morts",
+      "J'utilise systématiquement les clignotants",
+      "Mes contrôles visuels sont automatiques"
     ]
   },
   c1i: {
     title: "Marche arrière et demi-tour",
-    contexts: ["Parking vide", "Impasse calme", "Parking supermarché"],
-    situations: ["Marche arrière en ligne droite", "Demi-tour en 3 temps", "Marche arrière en courbe", "Demi-tour dans une rue"],
+    sessions: [
+      { lieu: "Parking auto-école", exercice: "Marche arrière en ligne droite" },
+      { lieu: "Parking auto-école", exercice: "Demi-tour en 3 temps" },
+      { lieu: "Zone industrielle", exercice: "Marche arrière en courbe" },
+      { lieu: "Zone industrielle", exercice: "Demi-tour en sécurité" }
+    ],
     feedbacks: [
       "La marche arrière devient plus naturelle",
-      "Le demi-tour me stresse encore",
+      "Le demi-tour me stresse moins",
       "Je gère mieux le volant en marche arrière",
-      "Je dois mieux regarder autour en manœuvrant"
+      "Je contrôle bien autour en manœuvrant"
     ]
   },
+
+  // ===== C2 - Circulation en conditions normales =====
+  // Lieux possibles: Centre-ville, zone commerciale, village, rond-point
   
-  // C2 - Appréhender la route
   c2a: {
     title: "Signalisation et indices",
-    contexts: ["Centre-ville", "Route départementale", "Zone commerciale", "Entrée d'agglomération"],
-    situations: ["Lecture des panneaux", "Marquage au sol", "Signaux lumineux", "Panneaux de direction"],
+    sessions: [
+      { lieu: "Centre-ville", exercice: "Lecture des panneaux" },
+      { lieu: "Centre-ville", exercice: "Interprétation du marquage au sol" },
+      { lieu: "Zone commerciale", exercice: "Repérage de la signalisation" },
+      { lieu: "Zone commerciale", exercice: "Anticipation des panneaux de direction" }
+    ],
     feedbacks: [
       "Je repère mieux les panneaux",
-      "Je dois mieux anticiper la signalisation",
-      "Les marquages au sol sont plus clairs",
-      "Je dois regarder plus loin pour anticiper"
+      "Je comprends mieux le marquage au sol",
+      "J'anticipe la signalisation",
+      "Je lis les panneaux plus tôt"
     ]
   },
   c2b: {
     title: "Positionnement sur la chaussée",
-    contexts: ["Route à plusieurs voies", "Avenue large", "Route départementale", "Boulevard"],
-    situations: ["Placement sur voie de droite", "Changement de voie", "Voie de présélection", "Positionnement avant intersection"],
+    sessions: [
+      { lieu: "Centre-ville", exercice: "Maintien dans la voie" },
+      { lieu: "Centre-ville", exercice: "Choix de la bonne voie" },
+      { lieu: "Route nationale", exercice: "Placement sur voie de droite" },
+      { lieu: "Route nationale", exercice: "Changement de voie sécurisé" }
+    ],
     feedbacks: [
       "Je me positionne mieux sur la voie",
-      "Les changements de voie sont moins stressants",
-      "Je dois mieux anticiper les voies de présélection",
-      "Mon positionnement avant les intersections s'améliore"
+      "Je choisis la bonne voie plus tôt",
+      "Mon placement est plus naturel",
+      "Je reste bien à droite sur nationale"
     ]
   },
   c2c: {
     title: "Adaptation de l'allure",
-    contexts: ["Zone 30", "Zone 50", "Route à 70 km/h", "Entrée de village"],
-    situations: ["Respect des limitations", "Adaptation à la circulation", "Ralentissement zone école", "Changement de limitation"],
+    sessions: [
+      { lieu: "Centre-ville", exercice: "Respect de la zone 30" },
+      { lieu: "Centre-ville", exercice: "Adaptation en zone 50" },
+      { lieu: "Route départementale", exercice: "Passage de 50 à 80 km/h" },
+      { lieu: "Village", exercice: "Ralentissement entrée d'agglomération" }
+    ],
     feedbacks: [
       "Je respecte mieux les limitations",
-      "J'adapte mieux ma vitesse au trafic",
-      "Je dois ralentir plus tôt près des écoles",
+      "J'adapte ma vitesse plus naturellement",
+      "Je ralentis à temps en entrant au village",
       "Je gère mieux les changements de vitesse"
     ]
   },
   c2d: {
     title: "Intersections et priorités",
-    contexts: ["Carrefour avec stop", "Carrefour avec cédez-le-passage", "Priorité à droite", "Intersection avec feux"],
-    situations: ["Arrêt au stop", "Cédez-le-passage", "Priorité à droite", "Passage au feu vert", "Feu orange"],
+    sessions: [
+      { lieu: "Centre-ville", exercice: "Arrêt au stop" },
+      { lieu: "Centre-ville", exercice: "Cédez-le-passage" },
+      { lieu: "Village", exercice: "Priorité à droite" },
+      { lieu: "Village", exercice: "Intersection sans signalisation" }
+    ],
     feedbacks: [
-      "Je marque mieux l'arrêt au stop",
+      "Je marque bien l'arrêt au stop",
       "Le cédez-le-passage est plus clair",
       "Les priorités à droite me stressent moins",
-      "Je gère mieux les feux tricolores"
+      "J'analyse mieux les intersections"
     ]
   },
   c2e: {
-    title: "Tourner en agglomération",
-    contexts: ["Centre-ville", "Quartier résidentiel", "Zone commerciale", "Intersection simple"],
-    situations: ["Tourne-à-droite simple", "Tourne-à-gauche", "Tourne-à-droite avec passage piéton", "Tourne-à-gauche avec trafic"],
+    title: "Tourner à droite et à gauche",
+    sessions: [
+      { lieu: "Centre-ville", exercice: "Tourne-à-droite simple" },
+      { lieu: "Centre-ville", exercice: "Tourne-à-gauche avec trafic" },
+      { lieu: "Centre-ville", exercice: "Tourne-à-droite avec passage piéton" },
+      { lieu: "Centre-ville", exercice: "Changement de direction en sécurité" }
+    ],
     feedbacks: [
       "Je tourne mieux à droite",
       "Le tourne-à-gauche est moins stressant",
@@ -342,65 +404,91 @@ const subCompetencyDetails = {
   },
   c2f: {
     title: "Ronds-points et giratoires",
-    contexts: ["Rond-point simple", "Giratoire à 2 voies", "Mini-giratoire", "Grand rond-point"],
-    situations: ["Entrée de rond-point", "Sortie de rond-point", "Changement de voie dans giratoire", "Rond-point à plusieurs sorties"],
+    sessions: [
+      { lieu: "Rond-point simple", exercice: "Insertion dans le rond-point" },
+      { lieu: "Rond-point simple", exercice: "Sortie du rond-point" },
+      { lieu: "Rond-point complexe", exercice: "Giratoire à 2 voies" },
+      { lieu: "Rond-point complexe", exercice: "Enchaînement entrée-sortie" }
+    ],
     feedbacks: [
       "J'entre plus facilement dans les ronds-points",
       "La sortie est plus fluide",
-      "Les giratoires à 2 voies restent difficiles",
-      "Je clignotante mieux en sortant"
+      "Je clignotante bien en sortant",
+      "Les giratoires à 2 voies sont plus clairs"
     ]
   },
   c2g: {
     title: "Stationnement",
-    contexts: ["Parking supermarché", "Rue en ville", "Parking en épi", "Parking en bataille"],
-    situations: ["Créneau côté droit", "Créneau côté gauche", "Bataille avant", "Épi avant", "Épi arrière"],
+    sessions: [
+      { lieu: "Centre-ville", exercice: "Créneau côté droit" },
+      { lieu: "Centre-ville", exercice: "Créneau côté gauche" },
+      { lieu: "Zone commerciale", exercice: "Bataille avant" },
+      { lieu: "Zone commerciale", exercice: "Épi avant et arrière" }
+    ],
     feedbacks: [
       "Le créneau s'améliore",
       "Je réussis mieux les batailles",
       "L'épi devient automatique",
-      "Je dois encore travailler le créneau à gauche"
+      "Je me gare plus rapidement"
     ]
   },
+
+  // ===== C3 - Conditions difficiles & partage de la route =====
+  // Lieux: Route départementale, périphérique, circulation dense, pluie, nuit
   
-  // C3 - Conditions difficiles
   c3a: {
     title: "Distances de sécurité",
-    contexts: ["Route nationale", "Voie rapide", "Autoroute", "Route mouillée"],
-    situations: ["Maintien des 2 secondes", "Adaptation en cas de pluie", "Distance sur autoroute", "Suivi à distance sécuritaire"],
+    sessions: [
+      { lieu: "Route départementale", exercice: "Règle des 2 secondes" },
+      { lieu: "Route départementale", exercice: "Maintien de distance en file" },
+      { lieu: "Voie rapide", exercice: "Distance sur voie rapide" },
+      { lieu: "Voie rapide", exercice: "Adaptation distance selon conditions" }
+    ],
     feedbacks: [
       "Je maintiens mieux la distance de sécurité",
-      "J'augmente la distance quand il pleut",
-      "Sur autoroute, je garde mes distances",
-      "Je dois moins coller le véhicule devant"
+      "J'applique la règle des 2 secondes",
+      "Je garde mes distances sur voie rapide",
+      "Je ne colle plus le véhicule devant"
     ]
   },
   c3b: {
-    title: "Croisements et dépassements",
-    contexts: ["Route départementale", "Route de campagne", "Route étroite", "Route avec circulation"],
-    situations: ["Croisement simple", "Croisement étroit", "Dépassement véhicule lent", "Être dépassé"],
+    title: "Croiser et dépasser",
+    sessions: [
+      { lieu: "Route départementale", exercice: "Croisement de véhicules larges" },
+      { lieu: "Route départementale", exercice: "Dépassement sécurisé" },
+      { lieu: "Route départementale", exercice: "Croisement sur route étroite" },
+      { lieu: "Route départementale", exercice: "Être dépassé en sécurité" }
+    ],
     feedbacks: [
       "Je croise mieux sur route étroite",
       "Le dépassement me stresse moins",
-      "Je laisse bien passer ceux qui dépassent",
-      "J'évalue mieux les distances pour dépasser"
+      "J'évalue mieux les distances pour dépasser",
+      "Je laisse bien passer ceux qui dépassent"
     ]
   },
   c3c: {
     title: "Virages et déclivité",
-    contexts: ["Route de montagne", "Col", "Route vallonnée", "Descente prolongée"],
-    situations: ["Virage en montée", "Virage en descente", "Enchaînement de virages", "Freinage moteur"],
+    sessions: [
+      { lieu: "Route de montagne", exercice: "Virage en épingle" },
+      { lieu: "Route de montagne", exercice: "Conduite en descente" },
+      { lieu: "Route départementale", exercice: "Enchaînement de virages" },
+      { lieu: "Route départementale", exercice: "Utilisation du frein moteur" }
+    ],
     feedbacks: [
       "Je gère mieux les virages en montagne",
       "Le frein moteur devient naturel",
-      "J'adapte mieux ma vitesse en descente",
+      "J'adapte ma vitesse en descente",
       "Les épingles sont moins stressantes"
     ]
   },
   c3d: {
     title: "Partage de la route",
-    contexts: ["Centre-ville", "Piste cyclable", "Zone piétonne", "Quartier avec écoles"],
-    situations: ["Passage piéton", "Dépassement cycliste", "Croisement deux-roues", "Zone scolaire"],
+    sessions: [
+      { lieu: "Centre-ville", exercice: "Interaction avec les piétons" },
+      { lieu: "Centre-ville", exercice: "Dépassement de cycliste" },
+      { lieu: "Village", exercice: "Croisement de deux-roues" },
+      { lieu: "Village", exercice: "Zone scolaire" }
+    ],
     feedbacks: [
       "Je fais plus attention aux piétons",
       "Je laisse de l'espace aux cyclistes",
@@ -410,19 +498,27 @@ const subCompetencyDetails = {
   },
   c3e: {
     title: "Voies rapides",
-    contexts: ["Entrée de périphérique", "Voie d'insertion autoroute", "Sortie de voie rapide", "Autoroute"],
-    situations: ["Insertion sur voie rapide", "Sortie de voie rapide", "Changement de voie sur autoroute", "Circulation sur file de droite"],
+    sessions: [
+      { lieu: "Périphérique", exercice: "Insertion sur voie d'accélération" },
+      { lieu: "Périphérique", exercice: "Sortie par voie de décélération" },
+      { lieu: "Voie rapide", exercice: "Changement de voie sur voie rapide" },
+      { lieu: "Voie rapide", exercice: "Circulation sur file de droite" }
+    ],
     feedbacks: [
       "L'insertion est moins stressante",
       "Je prends mieux les sorties",
       "Les changements de voie s'améliorent",
-      "Je gère mieux la vitesse sur autoroute"
+      "Je gère mieux la vitesse sur voie rapide"
     ]
   },
   c3f: {
     title: "Circulation dense",
-    contexts: ["Heure de pointe", "Centre-ville saturé", "Bouchon", "Périphérique chargé"],
-    situations: ["Conduite dans les bouchons", "Circulation au pas", "Insertion dans le trafic", "File lente"],
+    sessions: [
+      { lieu: "Circulation dense", exercice: "Conduite dans les bouchons" },
+      { lieu: "Circulation dense", exercice: "Anticipation en file lente" },
+      { lieu: "Centre-ville saturé", exercice: "Insertion dans le trafic dense" },
+      { lieu: "Centre-ville saturé", exercice: "Progression au pas" }
+    ],
     feedbacks: [
       "Je gère mieux les bouchons",
       "Je reste calme dans les embouteillages",
@@ -431,9 +527,13 @@ const subCompetencyDetails = {
     ]
   },
   c3g: {
-    title: "Circulation inter-files motos",
-    contexts: ["Périphérique", "Boulevard urbain", "Route à 2x2 voies"],
-    situations: ["Contrôle inter-files", "Anticipation remontée de file", "Changement de voie avec motos"],
+    title: "Inter-files moto",
+    sessions: [
+      { lieu: "Périphérique", exercice: "Observation de l'inter-files" },
+      { lieu: "Périphérique", exercice: "Anticipation remontée de file" },
+      { lieu: "Périphérique", exercice: "Contrôle avant changement de voie" },
+      { lieu: "Périphérique", exercice: "Vigilance motos en circulation dense" }
+    ],
     feedbacks: [
       "Je vérifie mieux l'inter-files",
       "J'anticipe les motos qui remontent",
@@ -443,19 +543,27 @@ const subCompetencyDetails = {
   },
   c3h: {
     title: "Adhérence et visibilité réduites",
-    contexts: ["Route mouillée", "Brouillard léger", "Pluie", "Crépuscule"],
-    situations: ["Conduite sous la pluie", "Brouillard", "Route glissante", "Visibilité réduite"],
+    sessions: [
+      { lieu: "Pluie légère", exercice: "Conduite sous la pluie" },
+      { lieu: "Pluie forte", exercice: "Adaptation à la chaussée mouillée" },
+      { lieu: "Nuit", exercice: "Conduite de nuit en ville" },
+      { lieu: "Nuit", exercice: "Utilisation des feux adaptés" }
+    ],
     feedbacks: [
       "J'adapte ma conduite à la pluie",
-      "Je ralentis bien par temps de brouillard",
-      "J'augmente mes distances de sécurité",
+      "J'augmente mes distances par temps humide",
+      "La conduite de nuit me stresse moins",
       "J'utilise bien les feux adaptés"
     ]
   },
   c3i: {
     title: "Ouvrages routiers",
-    contexts: ["Tunnel", "Pont étroit", "Passage à niveau", "Péage"],
-    situations: ["Entrée de tunnel", "Traversée de pont", "Passage à niveau automatique", "Passage au péage"],
+    sessions: [
+      { lieu: "Tunnel", exercice: "Entrée et sortie de tunnel" },
+      { lieu: "Pont", exercice: "Traversée de pont étroit" },
+      { lieu: "Passage à niveau", exercice: "Respect du passage à niveau" },
+      { lieu: "Péage", exercice: "Passage au péage" }
+    ],
     feedbacks: [
       "Le tunnel me stresse moins",
       "Je gère mieux les ponts étroits",
@@ -463,14 +571,20 @@ const subCompetencyDetails = {
       "Le péage devient routinier"
     ]
   },
+
+  // ===== C4 - Conduite autonome, sûre et économique =====
+  // Lieux: Parcours complet (mix de tous les environnements)
   
-  // C4 - Conduite autonome
   c4a: {
     title: "Itinéraire autonome",
-    contexts: ["Trajet inconnu", "Navigation GPS", "Ville inconnue", "Campagne"],
-    situations: ["Suivi GPS", "Lecture panneaux direction", "Choix d'itinéraire", "Orientation sans GPS"],
+    sessions: [
+      { lieu: "Centre-ville + périphérie", exercice: "Suivi d'itinéraire au GPS" },
+      { lieu: "Centre-ville + périphérie", exercice: "Navigation avec panneaux seuls" },
+      { lieu: "Parcours inconnu", exercice: "Orientation sans aide" },
+      { lieu: "Parcours inconnu", exercice: "Choix d'itinéraire autonome" }
+    ],
     feedbacks: [
-      "Je suis mieux les indications GPS",
+      "Je suis bien les indications GPS",
       "Je lis mieux les panneaux de direction",
       "Je fais mes propres choix d'itinéraire",
       "Je me repère mieux sans aide"
@@ -478,8 +592,12 @@ const subCompetencyDetails = {
   },
   c4b: {
     title: "Voyage longue distance",
-    contexts: ["Autoroute", "Trajet de 2h+", "Aires de repos", "Trajet varié"],
-    situations: ["Préparation du trajet", "Gestion des pauses", "Fatigue au volant", "Ravitaillement"],
+    sessions: [
+      { lieu: "Route nationale + voie rapide", exercice: "Simulation trajet longue distance" },
+      { lieu: "Route nationale + voie rapide", exercice: "Gestion des pauses" },
+      { lieu: "Autoroute", exercice: "Conduite prolongée sur autoroute" },
+      { lieu: "Autoroute", exercice: "Anticipation de la fatigue" }
+    ],
     feedbacks: [
       "J'ai bien préparé mon itinéraire",
       "Je gère mieux mes pauses",
@@ -489,8 +607,12 @@ const subCompetencyDetails = {
   },
   c4c: {
     title: "Facteurs de risque",
-    contexts: ["Discussion théorique", "Mise en situation", "Analyse de risques"],
-    situations: ["Identification des risques", "Fatigue/alcool/téléphone", "Comportements à risque", "Anticipation dangers"],
+    sessions: [
+      { lieu: "Parcours varié", exercice: "Analyse de situations à risque" },
+      { lieu: "Parcours varié", exercice: "Identification des dangers" },
+      { lieu: "Tous contextes", exercice: "Discussion sur fatigue/alcool/téléphone" },
+      { lieu: "Tous contextes", exercice: "Anticipation des comportements dangereux" }
+    ],
     feedbacks: [
       "Je comprends mieux les risques",
       "Je suis vigilant sur la fatigue",
@@ -499,31 +621,43 @@ const subCompetencyDetails = {
     ]
   },
   c4d: {
-    title: "Comportement en cas d'accident",
-    contexts: ["Formation théorique", "Simulation", "Exercice PAS"],
-    situations: ["Protéger-Alerter-Secourir", "Balisage", "Appel urgences", "Premiers gestes"],
+    title: "Comportement en cas d'accident (PAS)",
+    sessions: [
+      { lieu: "Parking (à l'arrêt)", exercice: "Exercice Protéger-Alerter-Secourir" },
+      { lieu: "Parking (à l'arrêt)", exercice: "Mise en place du balisage" },
+      { lieu: "Parking (à l'arrêt)", exercice: "Simulation appel urgences" },
+      { lieu: "Parking (à l'arrêt)", exercice: "Révision des gestes de premiers secours" }
+    ],
     feedbacks: [
       "Je connais la procédure PAS",
       "Je sais comment baliser un accident",
-      "J'ai retenu le numéro d'urgence",
+      "J'ai retenu le 15/17/18/112",
       "Je me sens capable d'agir en cas d'accident"
     ]
   },
   c4e: {
     title: "Aides à la conduite",
-    contexts: ["Véhicule équipé", "Test régulateur", "Test limiteur", "Navigation intégrée"],
-    situations: ["Utilisation régulateur", "Utilisation limiteur", "Aide au stationnement", "Navigation"],
+    sessions: [
+      { lieu: "Voie rapide", exercice: "Utilisation du régulateur" },
+      { lieu: "Voie rapide", exercice: "Utilisation du limiteur de vitesse" },
+      { lieu: "Voie rapide", exercice: "Test de l'ABS (théorique)" },
+      { lieu: "Voie rapide", exercice: "Navigation avec système embarqué" }
+    ],
     feedbacks: [
       "Je maîtrise le régulateur de vitesse",
       "Le limiteur est pratique en ville",
-      "L'aide au stationnement m'aide bien",
-      "Je sais utiliser la navigation"
+      "Je comprends le fonctionnement de l'ABS",
+      "Je sais utiliser les aides électroniques"
     ]
   },
   c4f: {
     title: "Entretien et dépannage",
-    contexts: ["Formation théorique", "Exercice pratique", "Simulation panne"],
-    situations: ["Vérification niveaux", "Changement roue", "Panne sur route", "Triangle et gilet"],
+    sessions: [
+      { lieu: "Parking", exercice: "Vérification des niveaux" },
+      { lieu: "Parking", exercice: "Contrôle pression des pneus" },
+      { lieu: "Parking", exercice: "Simulation changement de roue" },
+      { lieu: "Parking", exercice: "Localisation triangle et gilet" }
+    ],
     feedbacks: [
       "Je sais vérifier les niveaux",
       "J'ai compris le changement de roue",
@@ -533,8 +667,12 @@ const subCompetencyDetails = {
   },
   c4g: {
     title: "Éco-conduite",
-    contexts: ["Trajet urbain", "Route nationale", "Trajet mixte"],
-    situations: ["Anticipation", "Régime moteur optimal", "Utilisation du frein moteur", "Conduite souple"],
+    sessions: [
+      { lieu: "Route départementale", exercice: "Anticipation des ralentissements" },
+      { lieu: "Route départementale", exercice: "Utilisation du frein moteur" },
+      { lieu: "Centre-ville", exercice: "Conduite souple en ville" },
+      { lieu: "Centre-ville", exercice: "Régime moteur optimal" }
+    ],
     feedbacks: [
       "Je conduis de manière plus souple",
       "J'anticipe mieux pour économiser",
@@ -575,7 +713,7 @@ const generateLastSessionDetails = (evaluation) => {
     return {
       subCompetencyId: 'c1a',
       subCompetencyCode: 'A',
-      subCompetencyTitle: 'Vérifications intérieures et extérieures',
+      subCompetencyTitle: 'Commandes et vérifications',
       competencyId: 'c1',
       competencyName: 'C1',
       context: 'Parking auto-école',
@@ -587,7 +725,7 @@ const generateLastSessionDetails = (evaluation) => {
   const subCompId = lastCovered.subCompetency.id;
   const details = subCompetencyDetails[subCompId];
   
-  if (!details) {
+  if (!details || !details.sessions || details.sessions.length === 0) {
     // Fallback if no specific details
     return {
       subCompetencyId: subCompId,
@@ -601,15 +739,19 @@ const generateLastSessionDetails = (evaluation) => {
     };
   }
   
+  // Pick a random coherent session (lieu + exercice pair)
+  const session = randomElement(details.sessions);
+  const feedback = randomElement(details.feedbacks);
+  
   return {
     subCompetencyId: subCompId,
     subCompetencyCode: lastCovered.subCompetency.code.toUpperCase(),
     subCompetencyTitle: details.title,
     competencyId: lastCovered.competencyId,
     competencyName: lastCovered.competencyName,
-    context: randomElement(details.contexts),
-    situation: randomElement(details.situations),
-    feedback: randomElement(details.feedbacks)
+    context: session.lieu,
+    situation: session.exercice,
+    feedback: feedback
   };
 };
 
