@@ -7,7 +7,9 @@ import {
   Clock, 
   MapPin,
   MessageSquare,
-  CheckCircle2
+  CheckCircle2,
+  Target,
+  BookOpen
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -34,36 +36,29 @@ const CourseHistory = ({ courseHistory, evaluation }) => {
     return diff;
   };
 
-  // Get current competency from course history (now properly set based on hours)
-  const currentComp = courseHistory.currentCompetency || {
-    id: 'c1',
-    name: 'C1',
-    title: remcData?.c1?.title || 'Maîtriser le maniement du véhicule'
+  // Get last session details
+  const lastSession = courseHistory.lastSession || {
+    competencyId: 'c1',
+    competencyName: 'C1',
+    subCompetencyCode: 'A',
+    subCompetencyTitle: 'Vérifications',
+    context: courseHistory.lastContext || 'Parking',
+    situation: 'Exercices pratiques',
+    feedback: courseHistory.studentFeedback || 'Séance normale'
   };
 
   // Get competency color scheme
   const getCompColor = (compId) => {
     const colors = {
-      c1: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', gradient: 'from-blue-500 to-cyan-500' },
-      c2: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', gradient: 'from-emerald-500 to-teal-500' },
-      c3: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', gradient: 'from-amber-500 to-orange-500' },
-      c4: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', gradient: 'from-purple-500 to-pink-500' }
+      c1: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', gradient: 'from-blue-500 to-cyan-500', badge: 'bg-blue-100 text-blue-800' },
+      c2: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', gradient: 'from-emerald-500 to-teal-500', badge: 'bg-emerald-100 text-emerald-800' },
+      c3: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', gradient: 'from-amber-500 to-orange-500', badge: 'bg-amber-100 text-amber-800' },
+      c4: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', gradient: 'from-purple-500 to-pink-500', badge: 'bg-purple-100 text-purple-800' }
     };
     return colors[compId] || colors.c1;
   };
 
-  const compColor = getCompColor(currentComp.id);
-
-  // Level descriptions
-  const getLevelDescription = (level) => {
-    const descriptions = {
-      1: "Maniement du véhicule (trafic faible)",
-      2: "Circulation normale",
-      3: "Conditions difficiles",
-      4: "Conduite autonome"
-    };
-    return descriptions[level] || descriptions[1];
-  };
+  const compColor = getCompColor(lastSession.competencyId);
 
   return (
     <div className="space-y-4" data-testid="course-history">
@@ -148,42 +143,62 @@ const CourseHistory = ({ courseHistory, evaluation }) => {
 
       {/* Last Session Card */}
       <Card className="border border-slate-200 shadow-sm" data-testid="card-last-session">
-        <CardContent className="p-6">
+        <CardContent className="p-4 md:p-6">
           <h3 className="text-sm font-semibold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-            <Car className="w-4 h-4 text-slate-600" />
+            <BookOpen className="w-4 h-4 text-slate-600" />
             Dernière Séance
           </h3>
           
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
-              <span className="text-sm text-slate-600">Véhicule</span>
-              <span className="text-sm font-semibold text-slate-800">{courseHistory.vehicule}</span>
-            </div>
-            
-            <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
-              <span className="text-sm text-slate-600 flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                Contexte
-              </span>
-              <Badge variant="outline" className={`${compColor.bg} ${compColor.text} ${compColor.border}`}>
-                {courseHistory.lastContext}
-              </Badge>
+            {/* Sub-competency worked on */}
+            <div className={`p-3 rounded-xl ${compColor.bg} border-2 ${compColor.border}`}>
+              <div className="flex items-start gap-3">
+                <div className={`flex-shrink-0 w-10 h-10 rounded-lg ${compColor.badge} flex items-center justify-center font-bold text-sm`}>
+                  {lastSession.competencyName}-{lastSession.subCompetencyCode}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-xs font-medium ${compColor.text} mb-0.5`}>Sous-compétence travaillée</p>
+                  <p className="text-sm font-semibold text-slate-800 leading-tight">
+                    {lastSession.subCompetencyTitle}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className={`p-3 rounded-lg ${compColor.bg} border ${compColor.border}`}>
-              <div className="flex items-center gap-2 mb-1">
-                <CheckCircle2 className={`w-4 h-4 ${compColor.text}`} />
-                <span className={`text-xs font-medium ${compColor.text}`}>Compétence travaillée</span>
+            {/* Context and Situation */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
+                <p className="text-xs text-slate-500 flex items-center gap-1 mb-1">
+                  <MapPin className="w-3 h-3" />
+                  Lieu
+                </p>
+                <p className="text-sm font-medium text-slate-700">{lastSession.context}</p>
               </div>
-              <p className="text-sm font-semibold text-slate-800">{currentComp.name} - {currentComp.title}</p>
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
+                <p className="text-xs text-slate-500 flex items-center gap-1 mb-1">
+                  <Target className="w-3 h-3" />
+                  Exercice
+                </p>
+                <p className="text-sm font-medium text-slate-700">{lastSession.situation}</p>
+              </div>
+            </div>
+
+            {/* Vehicle */}
+            <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50">
+              <span className="text-xs text-slate-500 flex items-center gap-1">
+                <Car className="w-3 h-3" />
+                Véhicule
+              </span>
+              <span className="text-sm font-medium text-slate-700">{courseHistory.vehicule}</span>
             </div>
             
-            <div className="p-4 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200">
+            {/* Student feedback */}
+            <div className="p-3 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200">
               <div className="flex items-start gap-2">
-                <MessageSquare className="w-4 h-4 text-slate-500 mt-0.5" />
+                <MessageSquare className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-xs font-medium text-slate-500 mb-1">Retour de l'élève</p>
-                  <p className="text-sm text-slate-700 italic">"{courseHistory.studentFeedback}"</p>
+                  <p className="text-sm text-slate-700 italic">"{lastSession.feedback}"</p>
                 </div>
               </div>
             </div>
