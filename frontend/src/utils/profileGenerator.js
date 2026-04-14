@@ -877,7 +877,7 @@ const generateObjectives = (evaluation) => {
 };
 
 // Generate course history
-const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation, besoinSpecial) => {
+const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation, besoinSpecial, age) => {
   const hasSimulator = Math.random() > 0.4;
   const simulatorHours = hasSimulator ? randomInt(2, Math.min(10, Math.floor(hours * 0.3))) : 0;
   const realHours = hours - simulatorHours;
@@ -954,6 +954,11 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation, 
   // Cap at realistic maximum
   heuresEstimees = Math.min(heuresEstimees, 50);
   
+  // AAC (Apprentissage Anticipé de la Conduite) is only available for students aged 15-18
+  // In France, AAC allows students to start learning at 15 and drive with a parent until 18
+  const isAACEligible = age >= 15 && age <= 18;
+  const hasAAC = isAACEligible && Math.random() > 0.6; // 40% chance for eligible students
+  
   // Get current competency info
   const currentCompId = `c${currentLevel}`;
   const currentComp = remcData[currentCompId];
@@ -966,7 +971,8 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation, 
     enrollmentDate: enrollmentDate,
     lastLessonDate: lastLessonDate.toISOString().split('T')[0],
     vehicule: randomElement(profileData.vehicules),
-    hasAAC: Math.random() > 0.85, // 15% chance of AAC
+    hasAAC: hasAAC,
+    isAACEligible: isAACEligible,
     hasLicense: false, // Learning, so no license yet
     // Estimated hours from initial evaluation
     heuresEstimees: heuresEstimees,
@@ -1056,8 +1062,8 @@ export const generateProfile = (options = {}) => {
   // Generate pedagogical objectives
   const objectifs = generateObjectives(evaluation);
   
-  // Generate course history with current level context, evaluation and special needs
-  const courseHistory = generateCourseHistory(baseHours, enrollmentDate.toISOString().split('T')[0], currentLevel, evaluation, besoinSpecial);
+  // Generate course history with current level context, evaluation, special needs and age
+  const courseHistory = generateCourseHistory(baseHours, enrollmentDate.toISOString().split('T')[0], currentLevel, evaluation, besoinSpecial, age);
   
   // Calculate covered competencies count
   let coveredCount = 0;
