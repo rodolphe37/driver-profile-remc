@@ -82,7 +82,10 @@ export const profileData = {
       "Lycéen(ne) en Bac Pro Cuisine",
       "Apprenti(e) en CAP Coiffure",
       "Apprenti(e) en CAP Pâtisserie",
-      "Apprenti(e) en CAP Menuiserie"
+      "Apprenti(e) en CAP Menuiserie",
+      "Apprenti(e) en CAP Plomberie",
+      "Équipier(ère) en fast-food",
+      "Service civique"
     ],
     licence: [
       "Étudiant(e) en L1 Droit",
@@ -102,7 +105,15 @@ export const profileData = {
       "Serveur(se) en restauration",
       "Employé(e) de grande surface",
       "Livreur(se)",
-      "Hôte(sse) de caisse"
+      "Hôte(sse) de caisse",
+      "Coiffeur(se)",
+      "Pâtissier(ère)",
+      "Mécanicien(ne) auto",
+      "Manutentionnaire",
+      "Agent(e) d'entretien",
+      "Préparateur(trice) de commandes",
+      "En recherche d'emploi",
+      "Intérimaire"
     ],
     master: [
       "Étudiant(e) en M1 Droit des Affaires",
@@ -116,7 +127,20 @@ export const profileData = {
       "Technicien(ne) informatique",
       "Chargé(e) de communication (stage)",
       "Assistant(e) commercial(e)",
-      "Éducateur(trice) spécialisé(e) en formation"
+      "Éducateur(trice) spécialisé(e) en formation",
+      "Plombier(ère)",
+      "Électricien(ne)",
+      "Menuisier(ère)",
+      "Cuisinier(ère)",
+      "Serveur(se) en restauration",
+      "Vendeur(se) en magasin",
+      "Agent(e) immobilier",
+      "Conducteur(trice) de bus",
+      "Aide à domicile",
+      "Secrétaire médical(e)",
+      "En recherche d'emploi",
+      "Intérimaire",
+      "Auto-entrepreneur(se)"
     ],
     doctorat: [
       "Doctorant(e) en Sciences",
@@ -132,7 +156,19 @@ export const profileData = {
       "Kinésithérapeute",
       "Technicien(ne) de laboratoire",
       "Commercial(e)",
-      "Assistant(e) juridique"
+      "Assistant(e) juridique",
+      "Maçon(ne)",
+      "Carreleur(se)",
+      "Peintre en bâtiment",
+      "Chauffeur(se) poids lourd",
+      "Agent(e) de sécurité",
+      "Salarié(e) en CDI",
+      "Salarié(e) en CDD",
+      "Responsable de rayon",
+      "Gestionnaire de paie",
+      "Éducateur(trice) spécialisé(e)",
+      "Auto-entrepreneur(se)",
+      "En recherche d'emploi"
     ]
   },
   hobbies: [
