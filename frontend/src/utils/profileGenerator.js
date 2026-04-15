@@ -835,49 +835,72 @@ const generateEvaluation = (hours) => {
 };
 
 // Find weak competencies for pedagogical objectives
-// Prioritizes recent weak sub-competencies (near the progression front)
+// Prioritizes recent weak sub-competencies but allows older ones with lower probability
 const findWeakCompetencies = (evaluation) => {
   const weak = [];
   const competencyOrder = ['c1', 'c2', 'c3', 'c4'];
   
-  // Build a flat ordered list of all covered sub-competencies with their position
-  let globalIndex = 0;
-  let lastCoveredIndex = -1;
-  const allCovered = [];
-  
-  for (const compId of competencyOrder) {
-    const comp = evaluation[compId];
-    for (const sub of comp.subCompetencies) {
-      if (sub.covered) {
-        allCovered.push({ compId, comp, sub, position: globalIndex });
-        lastCoveredIndex = globalIndex;
-      }
-      globalIndex++;
+  // Find current level (highest competency with covered subs)
+  let currentCompLevel = 0;
+  for (let i = 0; i < competencyOrder.length; i++) {
+    const comp = evaluation[competencyOrder[i]];
+    if (comp.subCompetencies.some(s => s.covered)) {
+      currentCompLevel = i;
     }
   }
   
-  // Now find weak ones and score them by recency
-  allCovered.forEach(item => {
-    if (item.sub.status === 'faible' || item.sub.status === 'moyen') {
-      // Recency score: closer to lastCoveredIndex = higher score
-      const distance = lastCoveredIndex - item.position;
-      const recencyScore = Math.max(0, 1 - (distance / Math.max(1, lastCoveredIndex)));
-      
-      weak.push({
-        competencyId: item.compId,
-        competencyName: item.comp.name,
-        subCompetency: item.sub,
-        priority: item.sub.status === 'faible' ? 1 : 2,
-        recencyScore: recencyScore,
-        // Combined score: weakness weight + recency weight
-        // faible + recent = highest, moyen + old = lowest
-        sortScore: (item.sub.status === 'faible' ? 0 : 10) + distance
-      });
-    }
-  });
+  // Collect all weak sub-competencies with their competency level distance
+  for (let i = 0; i < competencyOrder.length; i++) {
+    const compId = competencyOrder[i];
+    const comp = evaluation[compId];
+    const levelDistance = currentCompLevel - i; // 0 = current, 1 = previous, etc.
+    
+    comp.subCompetencies.forEach(sub => {
+      if (sub.covered && (sub.status === 'faible' || sub.status === 'moyen')) {
+        // Weight: higher = more likely to be selected
+        // Current level: weight 10, previous: 4, 2 levels back: 1
+        let weight;
+        if (levelDistance === 0) weight = 10;
+        else if (levelDistance === 1) weight = 4;
+        else weight = 1;
+        
+        // Faible gets double weight vs moyen
+        if (sub.status === 'faible') weight *= 2;
+        
+        weak.push({
+          competencyId: compId,
+          competencyName: comp.name,
+          subCompetency: sub,
+          priority: sub.status === 'faible' ? 1 : 2,
+          weight: weight
+        });
+      }
+    });
+  }
   
-  // Sort by combined score (lower = more priority)
-  return weak.sort((a, b) => a.sortScore - b.sortScore);
+  return weak;
+};
+
+// Weighted random selection: pick items with probability proportional to weight
+const weightedPick = (items, count) => {
+  const picked = [];
+  const remaining = [...items];
+  
+  for (let i = 0; i < count && remaining.length > 0; i++) {
+    const totalWeight = remaining.reduce((sum, item) => sum + item.weight, 0);
+    let rand = Math.random() * totalWeight;
+    
+    for (let j = 0; j < remaining.length; j++) {
+      rand -= remaining[j].weight;
+      if (rand <= 0) {
+        picked.push(remaining[j]);
+        remaining.splice(j, 1);
+        break;
+      }
+    }
+  }
+  
+  return picked;
 };
 
 // Generate pedagogical objectives coherent with recent progression and weak points
@@ -885,10 +908,13 @@ const generateObjectives = (evaluation) => {
   const weakComps = findWeakCompetencies(evaluation);
   const objectives = [];
   
-  // Take top 3 weak competencies (already sorted by recency + weakness)
-  const topWeak = weakComps.slice(0, 3);
+  // Weighted random pick of 3 objectives (recent + faible = most likely)
+  const selected = weightedPick(weakComps, 3);
   
-  topWeak.forEach(item => {
+  // Sort selected: Prioritaire first, then by competency level
+  selected.sort((a, b) => a.priority - b.priority);
+  
+  selected.forEach(item => {
     const template = objectifsTemplates[item.competencyId]?.[item.subCompetency.code];
     if (template) {
       objectives.push({
