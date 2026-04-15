@@ -991,6 +991,20 @@ const generateCourseHistory = (hours, enrollmentDate, currentLevel, evaluation, 
   };
 };
 
+// Get occupation coherent with age
+const getOccupationByAge = (age) => {
+  if (age <= 18) {
+    return randomElement(profileData.occupationsByAge.lycee);
+  } else if (age <= 21) {
+    return randomElement(profileData.occupationsByAge.licence);
+  } else if (age <= 23) {
+    return randomElement(profileData.occupationsByAge.master);
+  } else {
+    return randomElement(profileData.occupationsByAge.doctorat);
+  }
+};
+
+
 // Main profile generation function
 export const generateProfile = (options = {}) => {
   const { level = null, advancement = 'random', gender = 'random', trap = 'none' } = options;
@@ -1082,7 +1096,7 @@ export const generateProfile = (options = {}) => {
     nomComplet: `${prenom} ${nom}`,
     age,
     genre: isFemale ? 'Femme' : 'Homme',
-    occupation: randomElement(profileData.occupations),
+    occupation: getOccupationByAge(age),
     hobbies,
     siblings: siblingsText,
     hasDriverLicense,
